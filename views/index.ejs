@@ -1,0 +1,85 @@
+<!-- views/index.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">Blog</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <% if (!user) { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/auth/login">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/auth/register">Register</a>
+                    </li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/auth/logout">Logout</a>
+                        </li>
+                        <% } %>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="text-center">
+            <h2>Welcome to my Blog</h2>
+        </div>
+
+        <% if (user) { %>
+            <a href="/posts/new" class="btn btn-primary mb-4">Create New Post</a>
+            <% } %>
+
+                <% if (posts && posts.length) { %>
+                    <div class="row">
+                        <% posts.forEach(post=> { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title"><a href="/posts/<%= post.id %>">
+                                                <%= post.title %>
+                                            </a></h4>
+                                        <p class="card-text">
+                                            <%= post.content.substring(0, 100) %>...
+                                        </p>
+                                        <a href="/posts/<%= post.id %>" class="btn btn-primary">Read More</a>
+                                        <!-- Read More Button -->
+                                        <% if (user && post.UserId===user.id) { %>
+                                            <!-- Check if user is defined before accessing user.id -->
+                                            <a href="/posts/edit/<%= post.id %>" class="btn btn-warning">Edit</a>
+                                            <form action="/posts/delete/<%= post.id %>" method="POST"
+                                                style="display:inline;">
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                            <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }) %>
+                    </div>
+                    <% } else { %>
+                        <p>No posts found.</p>
+                        <% } %>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

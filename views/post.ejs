@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= post.title %>
+    </title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">Blog</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <% if (!user) { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/auth/login">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/auth/register">Register</a>
+                    </li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/auth/logout">Logout</a>
+                        </li>
+                        <% } %>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <a href="/" class="btn btn-secondary mb-4">Back</a> <!-- Back Button -->
+        <h2>
+            <%= post.title %>
+        </h2>
+        <p>
+            <%= post.content %>
+        </p>
+        <div>
+            <h5>Tags:</h5>
+            <% post.Tags.forEach(tag=> { %>
+                <span class="badge badge-primary">
+                    <%= tag.name %>
+                </span>
+                <% }) %>
+        </div>
+        <% if (user && post.UserId===user.id) { %>
+            <a href="/posts/edit/<%= post.id %>" class="btn btn-warning">Edit</a>
+            <form action="/posts/delete/<%= post.id %>" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+            <% } %>
+
+                <div class="mt-4">
+                    <h5>Comments</h5>
+                    <% post.Comments.forEach(comment=> { %>
+                        <div class="card mt-2">
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <%= comment.content %>
+                                </p>
+                                <small class="text-muted">Posted by <%= comment.User.username %> on <%=
+                                            comment.createdAt.toDateString() %></small>
+                                <% if (user && comment.UserId===user.id) { %>
+                                    <form action="/comments/delete/<%= comment.id %>" method="POST"
+                                        style="display:inline;">
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                    <% } %>
+                            </div>
+                        </div>
+                        <% }) %>
+
+                            <% if (user) { %>
+                                <form action="/comments/create" method="POST" class="mt-4">
+                                    <div class="form-group">
+                                        <label for="content">Add a Comment:</label>
+                                        <textarea class="form-control" id="content" name="content" rows="3"
+                                            required></textarea>
+                                    </div>
+                                    <input type="hidden" name="postId" value="<%= post.id %>">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </form>
+                                <% } else { %>
+                                    <p>Please <a href="/auth/login">login</a> to add a comment.</p>
+                                    <% } %>
+                </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,32 @@
+<!-- views/managePosts.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Posts</title>
+    <!-- Add Bootstrap CDN in the head of your EJS files -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <h2>Manage Posts</h2>
+    <% posts.forEach(post=> { %>
+        <div>
+            <h3>
+                <%= post.title %>
+            </h3>
+            <p>
+                <%= post.content.substring(0, 100) %>...
+            </p>
+            <form action="/admin/posts/delete/<%= post.id %>" method="POST">
+                <button type="submit">Delete</button>
+            </form>
+        </div>
+        <% }) %>
+</body>
+
+</html>
