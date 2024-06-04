@@ -5,6 +5,7 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('./config/passport'); // Correct import path
 const { sequelize, Post, User, Tag, Comment } = require('./models'); // Ensure all models are imported
+const expressLayouts = require('express-ejs-layouts');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,11 +19,24 @@ app.use(session({
     resave: false,
     saveUninitialized: true
 }));
+
 app.use(flash()); // Use flash middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+app.use((req, res, next) => {
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');
+    res.locals.user = req.user || null;  // Make user available in all views
+    next();
+});
+
+app.use(expressLayouts);
 app.set('view engine', 'ejs');
+app.set('layout', 'layout');
+app.use(express.static('public'));
 
 // Routes
 const authRoutes = require('./routes/auth');

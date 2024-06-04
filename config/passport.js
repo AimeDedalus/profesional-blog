@@ -1,9 +1,9 @@
 // config/passport.js
-// config/passport.js
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 const { User } = require('../models');
+
 
 passport.use(new LocalStrategy(
     async (username, password, done) => {
@@ -22,6 +22,7 @@ passport.use(new LocalStrategy(
         }
     }
 ));
+
 
 passport.serializeUser((user, done) => {
     done(null, user.id);
